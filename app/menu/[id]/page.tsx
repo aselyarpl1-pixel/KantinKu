@@ -20,58 +20,63 @@ async function DetailMenuContent({ params }: Props) {
     notFound();
   }
 
+  const habis = item.stok <= 0;
+
   return (
-    <main className="min-h-screen bg-slate-50 px-4 py-12">
-      <div className="mx-auto max-w-5xl">
+    <main className="min-h-screen bg-slate-50 px-4 py-10 md:py-16">
+      <div className="mx-auto max-w-2xl">
         {/* Tombol kembali */}
         <Link
           href="/menu"
-          className="inline-flex items-center rounded-xl border border-slate-200 bg-white px-5 py-3 font-semibold text-slate-700 shadow-sm transition hover:border-blue-300 hover:bg-blue-50"
+          className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 font-semibold text-slate-700 shadow-sm transition hover:border-blue-300 hover:bg-blue-50"
         >
-          ← Kembali ke Menu
+          <span aria-hidden>←</span> Kembali ke Menu
         </Link>
 
         {/* Card detail menu */}
-        <div className="mt-8 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-          {/* Bagian atas tanpa ikon atau gambar */}
-          <div className="h-56 bg-linear-to-br from-blue-50 via-blue-50 to-blue-100 md:h-72" />
-
-          {/* Informasi menu */}
-          <div className="p-6 md:p-10">
-            <span className="inline-block rounded-full bg-blue-100 px-4 py-2 text-sm font-bold text-blue-700">
+        <div className="mt-8 overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-10">
+          <div className="flex items-start justify-between gap-3">
+            <span className="inline-block w-fit rounded-full bg-blue-100 px-4 py-1.5 text-sm font-bold text-blue-700">
               {item.kategori}
             </span>
 
-            <h1 className="mt-5 text-3xl font-extrabold text-slate-900 md:text-4xl">
-              {item.nama}
-            </h1>
+            {habis && (
+              <span className="rounded-full bg-red-500 px-4 py-1.5 text-sm font-bold text-white shadow">
+                Habis
+              </span>
+            )}
+          </div>
 
-            <p className="mt-4 text-3xl font-extrabold text-blue-600">
-              {rupiah(item.harga)}
-            </p>
+          <h1 className="mt-4 text-3xl font-extrabold leading-tight text-slate-900 md:text-4xl">
+            {item.nama}
+          </h1>
 
-            {/* Informasi stok */}
-            <div className="mt-8 rounded-2xl border border-slate-200 bg-slate-50 p-5">
-              <p className="text-sm font-medium text-slate-500">
-                Ketersediaan Stok
-              </p>
+          <p className="mt-3 text-3xl font-extrabold text-blue-600">
+            {rupiah(item.harga)}
+          </p>
 
-              <p
-                className={`mt-2 text-xl font-bold ${
-                  item.stok > 0 ? "text-green-600" : "text-red-600"
+          {/* Informasi stok */}
+          <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-slate-500">
+                Stok Tersedia
+              </span>
+              <span
+                className={`text-lg font-bold ${
+                  habis ? "text-red-600" : "text-green-600"
                 }`}
               >
-                {item.stok > 0 ? `${item.stok} tersedia` : "Stok habis"}
-              </p>
+                {habis ? "Habis" : `${item.stok} porsi`}
+              </span>
             </div>
+          </div>
 
-            {/* Aksi menu */}
-            <div className="mt-8">
-              <FormTambahKeranjang item={item} />
+          {/* Aksi menu */}
+          <div className="mt-6">
+            <FormTambahKeranjang item={item} />
 
-              <div className="mt-4">
-                <TombolFavorit id={item.id} />
-              </div>
+            <div className="mt-4">
+              <TombolFavorit id={item.id} />
             </div>
           </div>
         </div>

@@ -157,12 +157,12 @@ export default function KeranjangPage() {
 
     if (subtotal < 20000) {
       setPromoAktif(false);
-      setPesanPromo("Promo HEMAT10 membutuhkan belanja minimal Rp 20.000.");
+      setPesanPromo("Promo HEMAT10 butuh belanja minimal Rp 20.000.");
       return;
     }
 
     setPromoAktif(true);
-    setPesanPromo("Promo HEMAT10 berhasil digunakan!");
+    setPesanPromo("Promo HEMAT10 dipakai: diskon 10%.");
   }
 
   // Tahap 1: Membuka card pembayaran
@@ -250,58 +250,97 @@ export default function KeranjangPage() {
   }
 
   return (
-    <section className="mx-auto min-h-screen max-w-5xl px-4 py-10">
+    <section className="mx-auto min-h-screen max-w-5xl bg-slate-50 px-4 py-10">
       {/* HEADER */}
       <div className="mb-8 text-center">
         <span className="rounded-full bg-blue-100 px-4 py-2 text-sm font-bold text-blue-700">
           🛒 KantinKu
         </span>
 
-        <h1 className="mt-5 text-3xl font-extrabold text-gray-900 md:text-4xl">
+        <h1 className="mt-5 text-3xl font-extrabold text-slate-900 md:text-4xl">
           Keranjang Belanja
         </h1>
 
-        <p className="mt-2 text-gray-500">
+        <p className="mt-2 text-slate-500">
           Periksa pesananmu sebelum melakukan pembayaran.
         </p>
       </div>
 
       {/* STRUK BERHASIL */}
       {struk && (
-        <div className="mb-8 rounded-2xl border border-green-200 bg-green-50 p-6">
+        <div className="mx-auto mb-8 max-w-2xl rounded-3xl border border-green-200 bg-white p-6 shadow-sm sm:p-8">
           <div className="text-center">
-            <span className="text-5xl">✅</span>
+            <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-green-100">
+              <span className="text-3xl">✅</span>
+            </div>
 
-            <h2 className="mt-3 text-2xl font-extrabold text-green-700">
-              Pesanan Berhasil!
+            <h2 className="mt-4 text-2xl font-extrabold text-slate-900">
+              Terima kasih, {struk.nama}!
             </h2>
 
-            <p className="mt-2 text-gray-600">Terima kasih, {struk.nama}.</p>
+            <p className="mt-1 text-sm text-slate-500">
+              Pesananmu berhasil diproses.
+            </p>
           </div>
 
-          <div className="mt-5 space-y-2 border-t border-green-200 pt-4">
+          {/* GARIS PUTUS-PUTUS */}
+          <div className="my-6 border-t-2 border-dashed border-slate-200" />
+
+          {/* DAFTAR MENU */}
+          <div className="space-y-2">
+            <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
+              Detail Pesanan
+            </p>
+
             {struk.items.map((item, index) => (
-              <div key={index} className="flex justify-between gap-3">
-                <span>
+              <div key={index} className="flex justify-between gap-3 text-sm">
+                <span className="text-slate-700">
                   {item.nama} x{item.jumlah}
                 </span>
-
-                <span className="font-semibold">{rupiah(item.subtotal)}</span>
+                <span className="font-semibold text-slate-900">
+                  {rupiah(item.subtotal)}
+                </span>
               </div>
             ))}
+          </div>
 
-            <div className="border-t border-green-200 pt-3">
-              <p>Metode pembayaran: {struk.metodePembayaran}</p>
+          {/* GARIS PUTUS-PUTUS */}
+          <div className="my-6 border-t-2 border-dashed border-slate-200" />
 
-              <p className="mt-2 text-xl font-extrabold text-green-700">
-                Total: {rupiah(struk.total)}
-              </p>
+          {/* RINGKASAN */}
+          <div className="space-y-2 text-sm">
+            <div className="flex justify-between">
+              <span className="text-slate-500">Subtotal</span>
+              <span className="font-semibold text-slate-900">
+                {rupiah(struk.subtotal)}
+              </span>
+            </div>
+
+            {struk.diskon > 0 && (
+              <div className="flex justify-between text-green-600">
+                <span>Diskon</span>
+                <span className="font-semibold">-{rupiah(struk.diskon)}</span>
+              </div>
+            )}
+
+            <div className="flex justify-between">
+              <span className="text-slate-500">Pengambilan</span>
+              <span className="font-semibold text-slate-900">
+                {struk.caraAmbil === "antar"
+                  ? `Antar ke ${struk.kelas} (${rupiah(struk.ongkir)})`
+                  : "Diambil sendiri di kantin"}
+              </span>
+            </div>
+
+            <div className="flex justify-between border-t border-slate-200 pt-3 text-lg font-extrabold">
+              <span className="text-slate-900">Total bayar</span>
+              <span className="text-green-600">{rupiah(struk.total)}</span>
             </div>
           </div>
 
           <Link
             href="/riwayat"
-            className="mt-5 block rounded-xl bg-green-600 px-5 py-3 text-center font-bold text-white hover:bg-green-700"
+            className="mt-6 block rounded-xl bg-green-600 px-5 py-3 text-center font-bold text-white transition hover:bg-green-700"
           >
             Lihat Riwayat Pesanan →
           </Link>
@@ -311,14 +350,14 @@ export default function KeranjangPage() {
       {/* KERANJANG KOSONG */}
       {daftar.length === 0 ? (
         !struk && (
-          <div className="rounded-3xl border border-gray-200 bg-white p-10 text-center shadow-sm">
+          <div className="rounded-3xl border border-slate-200 bg-white p-10 text-center shadow-sm">
             <div className="text-6xl">🛒</div>
 
-            <h2 className="mt-4 text-xl font-bold text-gray-800">
-              Keranjang Masih Kosong
+            <h2 className="mt-4 text-xl font-bold text-slate-900">
+              Keranjang masih kosong.
             </h2>
 
-            <p className="mt-2 text-gray-500">
+            <p className="mt-2 text-slate-500">
               Silakan pilih menu terlebih dahulu.
             </p>
 
@@ -337,57 +376,61 @@ export default function KeranjangPage() {
             {daftar.map((item) => (
               <div
                 key={item.id}
-                className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
+                className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
               >
                 <div className="flex flex-col justify-between gap-4 sm:flex-row">
-                  <div>
-                    <h2 className="text-lg font-bold text-gray-800">
+                  <div className="flex-1">
+                    <h2 className="text-lg font-bold text-slate-900">
                       {item.nama}
                     </h2>
 
-                    <p className="mt-1 text-sm text-gray-500">
-                      {rupiah(item.harga)} / item
+                    <p className="mt-1 text-sm text-slate-500">
+                      {rupiah(item.harga)} / porsi
                     </p>
 
-                    <p className="mt-1 text-sm text-gray-500">
+                    <p className="mt-1 text-sm text-slate-500">
                       Stok: {item.stok}
-                    </p>
-
-                    <p className="mt-3 font-bold text-blue-600">
-                      {rupiah(item.subtotal)}
                     </p>
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => kurang(item.id)}
-                      disabled={item.jumlah <= 1}
-                      className="size-9 rounded-lg bg-gray-200 font-bold disabled:opacity-40"
-                    >
-                      -
-                    </button>
+                  <div className="flex flex-col items-end gap-3">
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => kurang(item.id)}
+                        disabled={item.jumlah <= 1}
+                        className="size-9 rounded-lg bg-slate-200 font-bold text-slate-700 transition hover:bg-slate-300 disabled:opacity-40"
+                      >
+                        -
+                      </button>
 
-                    <span className="min-w-8 text-center font-bold">
-                      {item.jumlah}
-                    </span>
+                      <span className="min-w-8 text-center font-bold text-slate-900">
+                        {item.jumlah}
+                      </span>
 
-                    <button
-                      type="button"
-                      onClick={() => tambah(item.id)}
-                      disabled={item.jumlah >= item.stok}
-                      className="size-9 rounded-lg bg-blue-600 font-bold text-white disabled:opacity-40"
-                    >
-                      +
-                    </button>
+                      <button
+                        type="button"
+                        onClick={() => tambah(item.id)}
+                        disabled={item.jumlah >= item.stok}
+                        className="size-9 rounded-lg bg-blue-600 font-bold text-white transition hover:bg-blue-700 disabled:opacity-40"
+                      >
+                        +
+                      </button>
+                    </div>
 
-                    <button
-                      type="button"
-                      onClick={() => hapus(item.id)}
-                      className="ml-2 rounded-lg bg-red-100 px-3 py-2 text-sm font-semibold text-red-600 hover:bg-red-200"
-                    >
-                      Hapus
-                    </button>
+                    <div className="flex items-center gap-3">
+                      <span className="text-lg font-extrabold text-blue-600">
+                        {rupiah(item.subtotal)}
+                      </span>
+
+                      <button
+                        type="button"
+                        onClick={() => hapus(item.id)}
+                        className="rounded-lg bg-red-100 px-3 py-2 text-sm font-semibold text-red-600 transition hover:bg-red-200"
+                      >
+                        Hapus
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -395,8 +438,8 @@ export default function KeranjangPage() {
           </div>
 
           {/* RINGKASAN PESANAN */}
-          <div className="h-fit rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-            <h2 className="text-xl font-bold text-gray-800">
+          <div className="h-fit rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <h2 className="text-xl font-bold text-slate-900">
               Ringkasan Pesanan
             </h2>
 
@@ -409,7 +452,7 @@ export default function KeranjangPage() {
                   value={kodePromo}
                   onChange={(e) => setKodePromo(e.target.value)}
                   placeholder="Masukkan kode promo"
-                  className="min-w-0 flex-1 rounded-lg border border-gray-300 p-3"
+                  className="min-w-0 flex-1 rounded-lg border border-slate-300 p-3"
                 />
 
                 <button
@@ -458,7 +501,7 @@ export default function KeranjangPage() {
                     value={kelas}
                     onChange={(e) => setKelas(e.target.value)}
                     placeholder="Contoh: XII RPL 1"
-                    className="w-full rounded-lg border border-gray-300 p-3"
+                    className="w-full rounded-lg border border-slate-300 p-3"
                   />
                 </div>
               )}
@@ -472,12 +515,12 @@ export default function KeranjangPage() {
                 value={nama}
                 onChange={(e) => setNama(e.target.value)}
                 placeholder="Masukkan nama"
-                className="w-full rounded-lg border border-gray-300 p-3"
+                className="w-full rounded-lg border border-slate-300 p-3"
               />
             </div>
 
             {/* TOTAL */}
-            <div className="mt-6 space-y-3 border-t border-gray-200 pt-5">
+            <div className="mt-6 space-y-3 border-t border-slate-200 pt-5">
               <div className="flex justify-between">
                 <span>Subtotal</span>
                 <span>{rupiah(subtotal)}</span>
@@ -485,7 +528,7 @@ export default function KeranjangPage() {
 
               {diskon > 0 && (
                 <div className="flex justify-between text-green-600">
-                  <span>Diskon 10%</span>
+                  <span>Diskon</span>
                   <span>-{rupiah(diskon)}</span>
                 </div>
               )}
@@ -497,7 +540,7 @@ export default function KeranjangPage() {
                 </div>
               )}
 
-              <div className="flex justify-between border-t border-gray-200 pt-4 text-lg font-bold">
+              <div className="flex justify-between border-t border-slate-200 pt-4 text-lg font-bold">
                 <span>Total</span>
                 <span className="text-blue-600">{rupiah(total)}</span>
               </div>
@@ -524,36 +567,89 @@ export default function KeranjangPage() {
       {/* CARD PEMBAYARAN */}
       {pesananPembayaran && (
         <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/60 p-3 sm:p-4">
-          <div className="my-auto max-h-[90dvh] w-full max-w-md overflow-y-auto rounded-2xl bg-white p-4 shadow-2xl sm:p-5">
+          <div className="my-auto max-h-[90dvh] w-full max-w-md overflow-y-auto rounded-3xl bg-white p-5 shadow-2xl sm:p-6">
             {/* HEADER PEMBAYARAN */}
-            <div className="text-center">
-              <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-blue-100 text-2xl">
+            <div className="relative text-center">
+              <button
+                type="button"
+                onClick={() => setPesananPembayaran(null)}
+                className="absolute right-0 top-0 flex size-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition hover:bg-slate-200"
+                aria-label="Tutup"
+              >
+                ✕
+              </button>
+
+              <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-blue-100 text-3xl">
                 💳
               </div>
 
-              <h2 className="mt-2 text-xl font-extrabold text-gray-900">
+              <h2 className="mt-3 text-2xl font-extrabold text-slate-900">
                 Pembayaran
               </h2>
 
-              <p className="mt-1 text-xs text-gray-500">
-                Periksa total pesanan dan pilih metode pembayaran.
+              <p className="mt-1 text-sm text-slate-500">
+                Periksa pesanan dan pilih metode pembayaran.
               </p>
             </div>
 
             {/* TOTAL BAYAR */}
-            <div className="mt-4 rounded-xl bg-blue-50 p-3 text-center">
-              <p className="text-xs font-semibold text-gray-500">
+            <div className="mt-5 rounded-2xl bg-blue-50 p-4 text-center">
+              <p className="text-xs font-semibold text-slate-500">
                 Total Pembayaran
               </p>
 
-              <p className="mt-1 text-2xl font-black text-blue-700">
+              <p className="mt-1 text-3xl font-black text-blue-700">
                 {rupiah(pesananPembayaran.total)}
               </p>
             </div>
 
+            {/* DETAIL PESANAN */}
+            <div className="mt-5 space-y-2 rounded-2xl border border-slate-200 p-4">
+              {pesananPembayaran.items.map((item, index) => (
+                <div
+                  key={index}
+                  className="flex justify-between gap-3 text-sm"
+                >
+                  <span className="text-slate-600">
+                    {item.nama} x{item.jumlah}
+                  </span>
+                  <span className="font-semibold text-slate-900">
+                    {rupiah(item.subtotal)}
+                  </span>
+                </div>
+              ))}
+
+              <div className="space-y-1.5 border-t border-slate-200 pt-3 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-slate-500">Subtotal</span>
+                  <span className="font-semibold text-slate-900">
+                    {rupiah(pesananPembayaran.subtotal)}
+                  </span>
+                </div>
+
+                {pesananPembayaran.diskon > 0 && (
+                  <div className="flex justify-between text-green-600">
+                    <span>Diskon</span>
+                    <span className="font-semibold">
+                      -{rupiah(pesananPembayaran.diskon)}
+                    </span>
+                  </div>
+                )}
+
+                {pesananPembayaran.ongkir > 0 && (
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Ongkir</span>
+                    <span className="font-semibold text-slate-900">
+                      {rupiah(pesananPembayaran.ongkir)}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+
             {/* METODE PEMBAYARAN */}
-            <div className="mt-4">
-              <h3 className="mb-2 text-sm font-bold text-gray-800">
+            <div className="mt-5">
+              <h3 className="mb-2 text-sm font-bold text-slate-900">
                 Pilih Metode Pembayaran
               </h3>
 
@@ -577,10 +673,10 @@ export default function KeranjangPage() {
                 ].map((metode) => (
                   <label
                     key={metode.nama}
-                    className={`flex cursor-pointer items-center gap-2 rounded-lg border p-3 transition ${
+                    className={`flex cursor-pointer items-center gap-3 rounded-xl border-2 p-3 transition ${
                       metodePembayaran === metode.nama
                         ? "border-blue-500 bg-blue-50"
-                        : "border-gray-200 hover:border-blue-300"
+                        : "border-slate-200 hover:border-blue-300"
                     }`}
                   >
                     <input
@@ -589,47 +685,49 @@ export default function KeranjangPage() {
                       value={metode.nama}
                       checked={metodePembayaran === metode.nama}
                       onChange={() => setMetodePembayaran(metode.nama)}
+                      className="sr-only"
                     />
 
-                    <span className="text-xl">{metode.ikon}</span>
+                    <span className="text-2xl">{metode.ikon}</span>
 
                     <span className="flex-1">
-                      <span className="block text-sm font-bold text-gray-800">
+                      <span className="block text-sm font-bold text-slate-900">
                         {metode.nama}
                       </span>
 
-                      <span className="text-xs text-gray-500">
+                      <span className="text-xs text-slate-500">
                         {metode.deskripsi}
                       </span>
                     </span>
 
-                    {metodePembayaran === metode.nama && (
-                      <span className="font-bold text-blue-600">✓</span>
-                    )}
+                    <span
+                      className={`flex size-5 items-center justify-center rounded-full border-2 transition ${
+                        metodePembayaran === metode.nama
+                          ? "border-blue-600 bg-blue-600"
+                          : "border-slate-300"
+                      }`}
+                    >
+                      {metodePembayaran === metode.nama && (
+                        <span className="size-2 rounded-full bg-white" />
+                      )}
+                    </span>
                   </label>
                 ))}
               </div>
             </div>
 
-            {/* RINGKASAN PEMBAYARAN */}
-            <div className="mt-4 space-y-2 border-t border-gray-200 pt-3 text-xs">
+            {/* INFO PEMESAN */}
+            <div className="mt-5 space-y-1.5 rounded-2xl bg-slate-50 p-4 text-xs">
               <div className="flex justify-between gap-3">
-                <span>Nama pemesan</span>
-                <span className="text-right font-semibold">
+                <span className="text-slate-500">Nama pemesan</span>
+                <span className="text-right font-semibold text-slate-900">
                   {pesananPembayaran.nama}
                 </span>
               </div>
 
-              <div className="flex justify-between">
-                <span>Jumlah jenis menu</span>
-                <span className="font-semibold">
-                  {pesananPembayaran.items.length} menu
-                </span>
-              </div>
-
               <div className="flex justify-between gap-3">
-                <span>Cara pengambilan</span>
-                <span className="text-right font-semibold">
+                <span className="text-slate-500">Pengambilan</span>
+                <span className="text-right font-semibold text-slate-900">
                   {pesananPembayaran.caraAmbil === "antar"
                     ? `Antar ke ${pesananPembayaran.kelas}`
                     : "Ambil sendiri"}
@@ -641,7 +739,7 @@ export default function KeranjangPage() {
             <button
               type="button"
               onClick={konfirmasiPembayaran}
-              className="mt-4 w-full rounded-lg bg-green-600 px-4 py-3 text-sm font-bold text-white shadow transition hover:bg-green-700"
+              className="mt-5 w-full rounded-xl bg-green-600 px-4 py-3.5 text-sm font-bold text-white shadow transition hover:bg-green-700"
             >
               Konfirmasi Pembayaran
             </button>
@@ -650,12 +748,12 @@ export default function KeranjangPage() {
             <button
               type="button"
               onClick={() => setPesananPembayaran(null)}
-              className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-semibold text-gray-600 transition hover:bg-gray-100"
+              className="mt-2 w-full rounded-xl border border-slate-300 px-4 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-100"
             >
               Kembali ke Keranjang
             </button>
 
-            <p className="mt-3 text-center text-[10px] text-gray-400">
+            <p className="mt-3 text-center text-[10px] text-slate-400">
               Simulasi pembayaran untuk aplikasi KantinKu. Tidak ada transaksi
               uang sungguhan.
             </p>

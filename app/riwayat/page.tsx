@@ -80,36 +80,36 @@ export default function RiwayatPage() {
   );
 
   return (
-    <main className="mx-auto min-h-screen max-w-5xl px-4 py-10">
+    <main className="mx-auto min-h-screen max-w-5xl bg-slate-50 px-4 py-10">
       {/* HEADER */}
       <div className="mb-8 text-center">
-        <h1 className="text-3xl font-extrabold text-gray-900">
+        <h1 className="text-3xl font-extrabold text-slate-900">
           Riwayat Pesanan
         </h1>
 
-        <p className="mt-2 text-gray-500">
+        <p className="mt-2 text-slate-500">
           Daftar pesanan yang pernah kamu buat.
         </p>
       </div>
 
       {/* RINGKASAN */}
       <div className="mb-6 grid gap-4 sm:grid-cols-3">
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Total Pesanan</p>
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <p className="text-sm text-slate-500">Total Pesanan</p>
           <h2 className="mt-2 text-2xl font-extrabold text-blue-600">
             {riwayat.length}
           </h2>
         </div>
 
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Jumlah Menu</p>
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <p className="text-sm text-slate-500">Jumlah Menu</p>
           <h2 className="mt-2 text-2xl font-extrabold text-blue-600">
             {jumlahMenu}
           </h2>
         </div>
 
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Total Belanja</p>
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <p className="text-sm text-slate-500">Total Belanja</p>
           <h2 className="mt-2 text-2xl font-extrabold text-green-600">
             {rupiah(totalBelanja)}
           </h2>
@@ -131,14 +131,14 @@ export default function RiwayatPage() {
 
       {/* DAFTAR RIWAYAT */}
       {riwayat.length === 0 ? (
-        <div className="rounded-2xl border border-gray-200 bg-white p-10 text-center shadow-sm">
+        <div className="rounded-2xl border border-slate-200 bg-white p-10 text-center shadow-sm">
           <div className="text-5xl">📋</div>
 
-          <h2 className="mt-4 text-xl font-bold text-gray-800">
+          <h2 className="mt-4 text-xl font-bold text-slate-800">
             Belum ada pesanan.
           </h2>
 
-          <p className="mt-2 text-gray-500">
+          <p className="mt-2 text-slate-500">
             Pesanan yang sudah dibuat akan muncul di sini.
           </p>
         </div>
@@ -147,15 +147,15 @@ export default function RiwayatPage() {
           {riwayat.map((pesanan) => (
             <div
               key={pesanan.id}
-              className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
+              className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
             >
-              <div className="flex flex-col justify-between gap-2 border-b border-gray-200 pb-4 sm:flex-row">
+              <div className="flex flex-col justify-between gap-2 border-b border-slate-200 pb-4 sm:flex-row">
                 <div>
-                  <h2 className="text-lg font-bold text-gray-800">
+                  <h2 className="text-lg font-bold text-slate-800">
                     Pesanan #{pesanan.id}
                   </h2>
 
-                  <p className="mt-1 text-sm text-gray-500">
+                  <p className="mt-1 text-sm text-slate-500">
                     {pesanan.tanggal}
                   </p>
                 </div>
@@ -165,7 +165,7 @@ export default function RiwayatPage() {
                 </span>
               </div>
 
-              <div className="mt-4 space-y-1 text-sm text-gray-600">
+              <div className="mt-4 space-y-1 text-sm text-slate-600">
                 <p>
                   Nama: <strong>{pesanan.nama}</strong>
                 </p>
@@ -188,28 +188,28 @@ export default function RiwayatPage() {
                 </p>
               </div>
 
-              <div className="mt-4 rounded-xl bg-gray-50 p-4">
-                <h3 className="mb-3 font-bold text-gray-800">Detail Menu</h3>
+              <div className="mt-4 rounded-xl bg-slate-50 p-4">
+                <h3 className="mb-3 font-bold text-slate-900">Detail Menu</h3>
 
                 {(pesanan.items || []).map((item, index) => (
                   <div
                     key={`${pesanan.id}-${index}`}
                     className="flex justify-between gap-3 py-2 text-sm"
                   >
-                    <span className="text-gray-600">
+                    <span className="text-slate-600">
                       {item.nama} x{item.jumlah}
                     </span>
 
-                    <span className="font-semibold text-gray-800">
+                    <span className="font-semibold text-slate-800">
                       {rupiah(item.subtotal)}
                     </span>
                   </div>
                 ))}
               </div>
 
-              <div className="mt-4 space-y-2 border-t border-gray-200 pt-4 text-sm">
+              <div className="mt-4 space-y-2 border-t border-slate-200 pt-4 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-gray-500">Subtotal</span>
+                  <span className="text-slate-500">Subtotal</span>
                   <span>{rupiah(pesanan.subtotal || 0)}</span>
                 </div>
 
@@ -227,7 +227,7 @@ export default function RiwayatPage() {
                   </div>
                 )}
 
-                <div className="flex justify-between border-t border-gray-200 pt-3 text-lg font-extrabold">
+                <div className="flex justify-between border-t border-slate-200 pt-3 text-lg font-extrabold">
                   <span>Total</span>
                   <span className="text-blue-600">{rupiah(pesanan.total)}</span>
                 </div>
