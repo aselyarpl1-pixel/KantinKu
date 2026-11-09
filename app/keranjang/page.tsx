@@ -70,7 +70,7 @@ export default function KeranjangPage() {
     null,
   );
 
-  const [metodePembayaran, setMetodePembayaran] = useState("QRIS");
+  const [metodePembayaran, setMetodePembayaran] = useState("Tunai");
   const [struk, setStruk] = useState<Pesanan | null>(null);
 
   // Memperbarui data keranjang
@@ -246,7 +246,7 @@ export default function KeranjangPage() {
     setNama("");
     setKelas("");
     setCaraAmbil("sendiri");
-    setMetodePembayaran("QRIS");
+    setMetodePembayaran("Tunai");
   }
 
   return (
@@ -648,71 +648,12 @@ export default function KeranjangPage() {
             </div>
 
             {/* METODE PEMBAYARAN */}
-            <div className="mt-5">
-              <h3 className="mb-2 text-sm font-bold text-slate-900">
-                Pilih Metode Pembayaran
-              </h3>
+            <div className="mt-5 flex items-center gap-3 rounded-2xl border-2 border-blue-500 bg-blue-50 p-4">
+              <span className="text-2xl">💵</span>
 
-              <div className="space-y-2">
-                {[
-                  {
-                    nama: "QRIS",
-                    ikon: "📱",
-                    deskripsi: "Pembayaran melalui QRIS",
-                  },
-                  {
-                    nama: "Transfer Bank",
-                    ikon: "🏦",
-                    deskripsi: "Transfer melalui bank",
-                  },
-                  {
-                    nama: "Tunai",
-                    ikon: "💵",
-                    deskripsi: "Bayar langsung di kantin",
-                  },
-                ].map((metode) => (
-                  <label
-                    key={metode.nama}
-                    className={`flex cursor-pointer items-center gap-3 rounded-xl border-2 p-3 transition ${
-                      metodePembayaran === metode.nama
-                        ? "border-blue-500 bg-blue-50"
-                        : "border-slate-200 hover:border-blue-300"
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name="metodePembayaran"
-                      value={metode.nama}
-                      checked={metodePembayaran === metode.nama}
-                      onChange={() => setMetodePembayaran(metode.nama)}
-                      className="sr-only"
-                    />
-
-                    <span className="text-2xl">{metode.ikon}</span>
-
-                    <span className="flex-1">
-                      <span className="block text-sm font-bold text-slate-900">
-                        {metode.nama}
-                      </span>
-
-                      <span className="text-xs text-slate-500">
-                        {metode.deskripsi}
-                      </span>
-                    </span>
-
-                    <span
-                      className={`flex size-5 items-center justify-center rounded-full border-2 transition ${
-                        metodePembayaran === metode.nama
-                          ? "border-blue-600 bg-blue-600"
-                          : "border-slate-300"
-                      }`}
-                    >
-                      {metodePembayaran === metode.nama && (
-                        <span className="size-2 rounded-full bg-white" />
-                      )}
-                    </span>
-                  </label>
-                ))}
+              <div className="flex-1">
+                <p className="text-sm font-bold text-slate-900">Tunai</p>
+                <p className="text-xs text-slate-500">Bayar langsung di kantin</p>
               </div>
             </div>
 
