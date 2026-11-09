@@ -117,7 +117,7 @@ export default function KontrolKatalog() {
           <div className="text-5xl">🔎</div>
 
           <h3 className="mt-4 text-xl font-bold text-gray-800">
-            Menu Tidak Ditemukan
+            Menu tidak ditemukan.
           </h3>
 
           <p className="mt-2 text-gray-500">

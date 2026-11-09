@@ -1,7 +1,9 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { menu, rupiah } from "@/data/menu";
-import AksiMenuDetail from "@/components/AksiMenuDetail";
+import FormTambahKeranjang from "@/components/FormTambahKeranjang";
+import TombolFavorit from "@/components/TombolFavorit";
 
 type Props = {
   params: Promise<{
@@ -9,7 +11,7 @@ type Props = {
   }>;
 };
 
-export default async function DetailMenu({ params }: Props) {
+async function DetailMenuContent({ params }: Props) {
   const { id } = await params;
 
   const item = menu.find((data) => data.id === Number(id));
@@ -19,41 +21,75 @@ export default async function DetailMenu({ params }: Props) {
   }
 
   return (
-    <main className="mx-auto min-h-screen max-w-5xl px-4 py-10">
-      <Link
-        href="/menu"
-        className="inline-block rounded-xl bg-gray-100 px-5 py-3 font-semibold text-gray-700 transition hover:bg-gray-200"
-      >
-        ← Kembali ke Menu
-      </Link>
+    <main className="min-h-screen bg-slate-50 px-4 py-12">
+      <div className="mx-auto max-w-5xl">
+        {/* Tombol kembali */}
+        <Link
+          href="/menu"
+          className="inline-flex items-center rounded-xl border border-slate-200 bg-white px-5 py-3 font-semibold text-slate-700 shadow-sm transition hover:border-blue-300 hover:bg-blue-50"
+        >
+          ← Kembali ke Menu
+        </Link>
 
-      <div className="mt-8 rounded-3xl border border-gray-200 bg-white p-6 shadow-sm md:p-10">
-        <span className="rounded-full bg-blue-100 px-4 py-2 text-sm font-bold text-blue-700">
-          {item.kategori}
-        </span>
+        {/* Card detail menu */}
+        <div className="mt-8 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+          {/* Bagian atas tanpa ikon atau gambar */}
+          <div className="h-56 bg-linear-to-br from-blue-50 via-blue-50 to-blue-100 md:h-72" />
 
-        <h1 className="mt-5 text-3xl font-extrabold text-gray-900">
-          {item.nama}
-        </h1>
+          {/* Informasi menu */}
+          <div className="p-6 md:p-10">
+            <span className="inline-block rounded-full bg-blue-100 px-4 py-2 text-sm font-bold text-blue-700">
+              {item.kategori}
+            </span>
 
-        <p className="mt-4 text-2xl font-extrabold text-blue-600">
-          {rupiah(item.harga)}
-        </p>
+            <h1 className="mt-5 text-3xl font-extrabold text-slate-900 md:text-4xl">
+              {item.nama}
+            </h1>
 
-        <div className="mt-6 rounded-2xl bg-gray-50 p-5">
-          <p className="text-sm text-gray-500">Stok tersedia</p>
+            <p className="mt-4 text-3xl font-extrabold text-blue-600">
+              {rupiah(item.harga)}
+            </p>
 
-          <p
-            className={`mt-2 text-xl font-bold ${
-              item.stok > 0 ? "text-green-600" : "text-red-600"
-            }`}
-          >
-            {item.stok > 0 ? `${item.stok} tersedia` : "Stok habis"}
-          </p>
+            {/* Informasi stok */}
+            <div className="mt-8 rounded-2xl border border-slate-200 bg-slate-50 p-5">
+              <p className="text-sm font-medium text-slate-500">
+                Ketersediaan Stok
+              </p>
+
+              <p
+                className={`mt-2 text-xl font-bold ${
+                  item.stok > 0 ? "text-green-600" : "text-red-600"
+                }`}
+              >
+                {item.stok > 0 ? `${item.stok} tersedia` : "Stok habis"}
+              </p>
+            </div>
+
+            {/* Aksi menu */}
+            <div className="mt-8">
+              <FormTambahKeranjang item={item} />
+
+              <div className="mt-4">
+                <TombolFavorit id={item.id} />
+              </div>
+            </div>
+          </div>
         </div>
-
-        <AksiMenuDetail id={item.id} stok={item.stok} />
       </div>
     </main>
+  );
+}
+
+export default function DetailMenu({ params }: Props) {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-slate-50 p-10 text-center font-semibold text-slate-600">
+          Memuat detail menu...
+        </div>
+      }
+    >
+      <DetailMenuContent params={params} />
+    </Suspense>
   );
 }

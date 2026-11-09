@@ -1,11 +1,12 @@
 "use client";
 
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { bacaJumlahKeranjang } from "@/lib/keranjang";
 
 const daftarMenu = [
-  { nama: "Beranda", href: "/beranda" },
+  { nama: "Beranda", href: "/" },
   { nama: "Menu", href: "/menu" },
   { nama: "Favorit", href: "/favorit" },
   { nama: "Keranjang", href: "/keranjang" },
@@ -34,16 +35,16 @@ export default function Navbar() {
 
   return (
     <nav className="navbar">
-      <a href="/beranda" className="navbar-logo">
+      <Link href="/" className="navbar-logo">
         KantinKu
-      </a>
+      </Link>
 
       <div className="navbar-menu">
         {daftarMenu.map((item) => {
           const aktif = pathname === item.href;
 
           return (
-            <a
+            <Link
               key={item.href}
               href={item.href}
               className={`navbar-link ${aktif ? "aktif" : ""}`}
@@ -56,7 +57,7 @@ export default function Navbar() {
                   {jumlah}
                 </span>
               )}
-            </a>
+            </Link>
           );
         })}
       </div>

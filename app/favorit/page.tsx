@@ -1,48 +1,71 @@
 "use client";
 
 import Link from "next/link";
-import { useSyncExternalStore } from "react";
-import { menu } from "@/data/menu";
+import { useEffect, useState } from "react";
 import KartuMenu from "@/components/KartuMenu";
-
-function berlangganan(callback: () => void) {
-  window.addEventListener("favorit-berubah", callback);
-  window.addEventListener("storage", callback);
-
-  return () => {
-    window.removeEventListener("favorit-berubah", callback);
-    window.removeEventListener("storage", callback);
-  };
-}
-
-function ambilFavorit() {
-  return localStorage.getItem("favorit") || "[]";
-}
-
-function ambilFavoritServer() {
-  return "[]";
-}
+import type { Menu } from "@/data/menu";
 
 export default function FavoritPage() {
-  const dataFavorit = useSyncExternalStore(
-    berlangganan,
-    ambilFavorit,
-    ambilFavoritServer,
-  );
+  const [menu, setMenu] = useState<Menu[]>([]);
+  const [daftarId, setDaftarId] = useState<number[]>([]);
+  const [memuat, setMemuat] = useState(true);
+  const [galat, setGalat] = useState("");
 
-  let daftarId: number[] = [];
+  useEffect(() => {
+    let batal = false;
 
-  try {
-    daftarId = JSON.parse(dataFavorit);
-  } catch {
-    daftarId = [];
-  }
+    async function ambilData() {
+      setMemuat(true);
+      setGalat("");
+
+      try {
+        const res = await fetch("/api/menu");
+
+        if (!res.ok) {
+          throw new Error("Gagal mengambil data menu.");
+        }
+
+        const data: Menu[] = await res.json();
+
+        if (batal) return;
+
+        setMenu(data);
+      } catch (err) {
+        if (batal) return;
+
+        setGalat(
+          err instanceof Error ? err.message : "Terjadi kesalahan tak terduga.",
+        );
+      } finally {
+        if (!batal) setMemuat(false);
+      }
+    }
+
+    function bacaFavorit() {
+      try {
+        setDaftarId(JSON.parse(localStorage.getItem("favorit") || "[]"));
+      } catch {
+        setDaftarId([]);
+      }
+    }
+
+    ambilData();
+    bacaFavorit();
+
+    window.addEventListener("favorit-berubah", bacaFavorit);
+    window.addEventListener("storage", bacaFavorit);
+
+    return () => {
+      batal = true;
+      window.removeEventListener("favorit-berubah", bacaFavorit);
+      window.removeEventListener("storage", bacaFavorit);
+    };
+  }, []);
 
   const daftarFavorit = menu.filter((item) => daftarId.includes(item.id));
 
   return (
     <section className="mx-auto min-h-[75vh] max-w-6xl space-y-8 px-4 py-8">
-      {/* HEADER */}
       <div className="text-center">
         <span className="inline-block rounded-full bg-blue-100 px-5 py-2 text-sm font-semibold text-blue-700">
           ❤️ Koleksi KantinKu
@@ -58,7 +81,6 @@ export default function FavoritPage() {
         </p>
       </div>
 
-      {/* JUMLAH FAVORIT */}
       <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
         <div>
           <h2 className="text-xl font-bold text-gray-900">
@@ -78,20 +100,30 @@ export default function FavoritPage() {
         </Link>
       </div>
 
-      {/* KARTU FAVORIT */}
-      {daftarFavorit.length > 0 ? (
+      {memuat ? (
+        <div className="rounded-2xl border border-dashed border-gray-300 bg-white px-5 py-16 text-center">
+          <p className="text-lg font-semibold text-gray-600">Memuat...</p>
+        </div>
+      ) : galat ? (
+        <div className="rounded-2xl border border-red-200 bg-red-50 px-5 py-16 text-center">
+          <div className="text-5xl">⚠️</div>
+          <h3 className="mt-4 text-xl font-bold text-red-700">
+            Gagal memuat data
+          </h3>
+          <p className="mt-2 text-red-600">{galat}</p>
+        </div>
+      ) : daftarFavorit.length > 0 ? (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {daftarFavorit.map((item) => (
             <KartuMenu key={item.id} item={item} />
           ))}
         </div>
       ) : (
-        /* TAMPILAN KOSONG */
         <div className="rounded-2xl border border-dashed border-gray-300 bg-white px-5 py-16 text-center">
           <div className="text-6xl">💔</div>
 
           <h3 className="mt-4 text-xl font-bold text-gray-800">
-            Belum Ada Menu Favorit
+            Belum ada menu favorit.
           </h3>
 
           <p className="mt-2 text-gray-500">
@@ -102,7 +134,7 @@ export default function FavoritPage() {
             href="/menu"
             className="mt-6 inline-block rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700"
           >
-            🍽️ Jelajahi Menu
+            Jelajahi Menu
           </Link>
         </div>
       )}
